@@ -48,39 +48,42 @@
 <h3>
 <a id="keeping-snippets" class="anchor" href="#keeping-snippets" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>keeping snippets</h3>
 
-<p>I have a separate <code>snippets.tidal</code> file where I keep a bunch of macros that I find useful.  If you come up with something really great, consider sharing it!  Here's what mine currently looks like:
-let (**<em>) = foldl (|</em>|)
+<p>I have a separate <code>snippets.tidal</code> file where I keep a bunch of macros that I find useful.  If you come up with something really great, consider sharing it!  Here's what mine currently looks like:</p>
+
+<pre><code>let (***) = foldl (|*|)
     (+++) = foldl (|+|)
     (###) = foldl (#)
     outside n f p = slow n $ f (density n p)
-    every' n o f = when ((== o) . (<code>mod</code> n)) f
+    every' n o f = when ((== o) . (`mod` n)) f
     withArc (s,e) f p = stack [sliceArc (0,s) p, f $ sliceArc (s,e) p, sliceArc (e,1) p]
     shiftArc (s,e) t = withArc (s,e) (t ~&gt;)
-    beginend bpat durpat = (begin bpat) # (end $ (+) &lt;$&gt; bpat &lt;<em>&gt; durpat)
-    flange n t p = stack [ (toRational i</em>t) ~&gt; p # begin (pure $ i/n) # end (pure $ (i+1)/n) | i &lt;- [0..n-1] ]
+    beginend bpat durpat = (begin bpat) # (end $ (+) &lt;$&gt; bpat &lt;*&gt; durpat)
+    flange n t p = stack [ (toRational i*t) ~&gt; p # begin (pure $ i/n) # end (pure $ (i+1)/n) | i &lt;- [0..n-1] ]
     sometimesBy' x f p = (1024 ~&gt;) $ sometimesBy x f p
-    pingpongBy x t f p = stack [p, t ~&gt; (f p # pan (pure $ (1-x)/2)), (3<em>t) ~&gt; (f $ f p # pan (pure $ (x+1)/2))]
+    pingpongBy x t f p = stack [p, t ~&gt; (f p # pan (pure $ (1-x)/2)), (3*t) ~&gt; (f $ f p # pan (pure $ (x+1)/2))]
     pingpong = pingpongBy 1
     pingpongBy' x fb tL tR cps f p = stack [ p,
-                                 (tL ~&gt; (f p)) # pan (pure $ (1-x)/2) |</em>| ddd,
-                                 ((tL+tR) ~&gt; (f p)) # pan (pure $ (x+1)/2) |<em>| ddd ]
-              where ddd = delay "1" |</em>| delaytime (pure $ fromRational $ (tL+tR)/cps) |<em>| delayfeedback (pure fb) |</em>| gain (pure fb)
+                                 (tL ~&gt; (f p)) # pan (pure $ (1-x)/2) |*| ddd,
+                                 ((tL+tR) ~&gt; (f p)) # pan (pure $ (x+1)/2) |*| ddd ]
+              where ddd = delay "1" |*| delaytime (pure $ fromRational $ (tL+tR)/cps) |*| delayfeedback (pure fb) |*| gain (pure fb)
     pop op x y = op &lt;$&gt; x &lt;*&gt; y
-    padd = pop (+)</p>
-
-<pre><code>I just evaluate this whole thing and get all those functions for the remainder of my Tidal session.
-
-### My TidalCustom.hs  
-For more sophisticated customizations that might need to pull from another library, you can try moving your definitions to a separate file that will be loaded at Tidal startup (either in Emacs or Atom).  Notice there's some overlap with some of the stuff I defined above.
-
-First a bunch of options and imports (not all of these are necessary at the moment)
+    padd = pop (+)
 </code></pre>
 
-<p>{-# OPTIONS_GHC -XNoMonomorphismRestriction #-}</p>
+<p>I just evaluate this whole thing and get all those functions for the remainder of my Tidal session.</p>
 
-<p>module TidalCustom where</p>
+<h3>
+<a id="my-tidalcustomhs" class="anchor" href="#my-tidalcustomhs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>My TidalCustom.hs</h3>
 
-<p>import Control.Applicative
+<p>For more sophisticated customizations that might need to pull from another library, you can try moving your definitions to a separate file that will be loaded at Tidal startup (either in Emacs or Atom).  Notice there's some overlap with some of the stuff I defined above.</p>
+
+<p>First a bunch of options and imports (not all of these are necessary at the moment)</p>
+
+<pre><code>{-# OPTIONS_GHC -XNoMonomorphismRestriction #-}
+
+module TidalCustom where
+
+import Control.Applicative
 import Data.Monoid
 import Data.Fixed
 import Data.List
@@ -101,69 +104,69 @@ import Sound.Tidal.Utils
 import Data.Time (getCurrentTime, UTCTime, diffUTCTime)
 import Data.Time.Clock.POSIX
 import Control.Concurrent.MVar
-import Control.Monad.Trans (liftIO)</p>
-
-<pre><code>
-Then I define some custom functions I use a lot
+import Control.Monad.Trans (liftIO)
 </code></pre>
 
-<p>outside n f p = slow n $ f (density n p) </p>
+<p>Then I define some custom functions I use a lot</p>
 
-<p>every' n o f = when ((== o) . (<code>mod</code> n)) f </p>
+<pre><code>outside n f p = slow n $ f (density n p) 
 
-<p>slowspread' n f xs = slowspread f (concat $ map (replicate n) xs)</p>
+every' n o f = when ((== o) . (`mod` n)) f 
 
-<p>metallo :: Time -&gt; [Int] -&gt; [Double] -&gt; (OscPattern -&gt; OscPattern)
-metallo i xs ys = slowspread (\x -&gt; inside i (striate' (fst x) (snd x))) (zip xs ys) </p>
+slowspread' n f xs = slowspread f (concat $ map (replicate n) xs)
 
-<p>choppedsaw1 :: Time -&gt; Pattern Double
+metallo :: Time -&gt; [Int] -&gt; [Double] -&gt; (OscPattern -&gt; OscPattern)
+metallo i xs ys = slowspread (\x -&gt; inside i (striate' (fst x) (snd x))) (zip xs ys) 
+
+choppedsaw1 :: Time -&gt; Pattern Double
 choppedsaw1 n = sig $ \t -&gt; 
   let t1  = mod' (fromRational t) 1
-      sqr = (2 * floor (t1 * n)) - (floor (2<em>t1</em>n)) + 1
-  in  (t1 - 1) * (fromIntegral sqr) + 1</p>
+      sqr = (2 * floor (t1 * n)) - (floor (2*t1*n)) + 1
+  in  (t1 - 1) * (fromIntegral sqr) + 1
 
-<p>withArc' :: Arc -&gt; (Pattern a -&gt; Pattern a) -&gt; Pattern a -&gt; Pattern a
+withArc' :: Arc -&gt; (Pattern a -&gt; Pattern a) -&gt; Pattern a -&gt; Pattern a
 withArc' (s,e) f p = stack [sliceArc (0,s) p,
                             f $ sliceArc (s,e) p,
                             sliceArc (e,1) p
-                           ]</p>
+                           ]
 
-<p>shiftArc (s,e) t = withArc' (s,e) (t ~&gt;)</p>
-
-<pre><code>### Modifying Tidal
-It's really not too hard to develop Tidal itself.  Create a fork and clone it to your computer.  You can edit your startup script (`BootTidal.hs` in Atom) to load this installation instead of the one Cabal installed (see next section).  Now you can edit Tidal's source files directly, reboot Tidal, and see the effects of what you did!  It's probably polite to make a new branch for changes you make, then you can sync it and submit a pull request to have your changes brought back into the main version of Tidal.
-
-## Customizing Atom -- BootTidal.hs
-I use an edited version of this file to set up easy interfaces to SuperCollider and [this visualizer](https://github.com/fortmeier/weltfrieden)
-
-First, I tell it to use a development version of Tidal (dev-0.7 at the moment) from GitHub rather than the Tidal version installed by Cabal
+shiftArc (s,e) t = withArc' (s,e) (t ~&gt;)
 </code></pre>
 
-<p>:cd ~/Documents/GitHub/Tidal2
+<h3>
+<a id="modifying-tidal" class="anchor" href="#modifying-tidal" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Modifying Tidal</h3>
+
+<p>It's really not too hard to develop Tidal itself.  Create a fork and clone it to your computer.  You can edit your startup script (<code>BootTidal.hs</code> in Atom) to load this installation instead of the one Cabal installed (see next section).  Now you can edit Tidal's source files directly, reboot Tidal, and see the effects of what you did!  It's probably polite to make a new branch for changes you make, then you can sync it and submit a pull request to have your changes brought back into the main version of Tidal.</p>
+
+<h2>
+<a id="customizing-atom----boottidalhs" class="anchor" href="#customizing-atom----boottidalhs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Customizing Atom -- BootTidal.hs</h2>
+
+<p>I use an edited version of this file to set up easy interfaces to SuperCollider and <a href="https://github.com/fortmeier/weltfrieden">this visualizer</a></p>
+
+<p>First, I tell it to use a development version of Tidal (dev-0.7 at the moment) from GitHub rather than the Tidal version installed by Cabal</p>
+
+<pre><code>:cd ~/Documents/GitHub/Tidal2
 :set prompt ""
-:load Sound.Tidal.Context</p>
-
-<pre><code>
-Then there's the standard stuff to set up `(d1,t1)` through `(d9,t9)`, after which I add the following to connect to SuperCollider (I'm assuming `0.7` branch of SuperDirt here)
+:load Sound.Tidal.Context
 </code></pre>
 
-<p>(sd1, td1) &lt;- superDirtSetters getNow</p>
+<p>Then there's the standard stuff to set up <code>(d1,t1)</code> through <code>(d9,t9)</code>, after which I add the following to connect to SuperCollider (I'm assuming <code>0.7</code> branch of SuperDirt here)</p>
 
-<pre><code>If you want `hush` to work with everything you need to add to its definition
+<pre><code>(sd1, td1) &lt;- superDirtSetters getNow
 </code></pre>
 
-<p>let hush = mapM_ ($ silence) [d1,d2,d3,d4,d5,d6,d7,d8,d9,sd1]</p>
+<p>If you want <code>hush</code> to work with everything you need to add to its definition</p>
 
-<pre><code>
-Finally, to interface with the visualizer I insert
+<pre><code>let hush = mapM_ ($ silence) [d1,d2,d3,d4,d5,d6,d7,d8,d9,sd1]
 </code></pre>
 
-<p>let splashState = Sound.Tidal.Context.state "127.0.0.1" 7772 dirt
+<p>Finally, to interface with the visualizer I insert</p>
+
+<pre><code>let splashState = Sound.Tidal.Context.state "127.0.0.1" 7772 dirt
 let splashSetters getNow = do ss &lt;- splashState ; return (setter ss, transition getNow ss)
 (gl1,glt1) &lt;- splashSetters getNow
-(gl2,glt2) &lt;- splashSetters getNow</p>
-
-<pre><code></code></pre>
+(gl2,glt2) &lt;- splashSetters getNow
+</code></pre>
       </section>
 
     </div>
