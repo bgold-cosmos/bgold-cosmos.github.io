@@ -35,18 +35,18 @@
           <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
         </div>
 
-        <h3>
-<a id="tidal-notes" class="anchor" href="#tidal-notes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Tidal notes</h3>
+        <h2>
+<a id="tidal-notes" class="anchor" href="#tidal-notes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Tidal notes</h2>
 
 <p>I use and occasionally contribute to Tidal (<a href="https://github.com/tidalcycles" class="user-mention">@tidalcycles</a>).  I also use the Atom plugin to run things.</p>
 
-<h3>
-<a id="customizing-tidal" class="anchor" href="#customizing-tidal" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Customizing Tidal</h3>
+<h2>
+<a id="customizing-tidal" class="anchor" href="#customizing-tidal" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Customizing Tidal</h2>
 
 <p>There are several options! Here I go from simpler to more advanced</p>
 
-<h2>
-<a id="keeping-snippets" class="anchor" href="#keeping-snippets" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>keeping snippets</h2>
+<h3>
+<a id="keeping-snippets" class="anchor" href="#keeping-snippets" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>keeping snippets</h3>
 
 <p>I have a separate <code>snippets.tidal</code> file where I keep a bunch of macros that I find useful.  If you come up with something really great, consider sharing it!  Here's what mine currently looks like:
 let (**<em>) = foldl (|</em>|)
@@ -70,7 +70,7 @@ let (**<em>) = foldl (|</em>|)
 
 <pre><code>I just evaluate this whole thing and get all those functions for the remainder of my Tidal session.
 
-## My TidalCustom.hs  
+### My TidalCustom.hs  
 For more sophisticated customizations that might need to pull from another library, you can try moving your definitions to a separate file that will be loaded at Tidal startup (either in Emacs or Atom).  Notice there's some overlap with some of the stuff I defined above.
 
 First a bunch of options and imports (not all of these are necessary at the moment)
@@ -130,8 +130,10 @@ withArc' (s,e) f p = stack [sliceArc (0,s) p,
 
 <p>shiftArc (s,e) t = withArc' (s,e) (t ~&gt;)</p>
 
-<pre><code>
-### Customizing Atom -- BootTidal.hs
+<pre><code>### Modifying Tidal
+It's really not too hard to develop Tidal itself.  Create a fork and clone it to your computer.  You can edit your startup script (`BootTidal.hs` in Atom) to load this installation instead of the one Cabal installed (see next section).  Now you can edit Tidal's source files directly, reboot Tidal, and see the effects of what you did!  It's probably polite to make a new branch for changes you make, then you can sync it and submit a pull request to have your changes brought back into the main version of Tidal.
+
+## Customizing Atom -- BootTidal.hs
 I use an edited version of this file to set up easy interfaces to SuperCollider and [this visualizer](https://github.com/fortmeier/weltfrieden)
 
 First, I tell it to use a development version of Tidal (dev-0.7 at the moment) from GitHub rather than the Tidal version installed by Cabal
