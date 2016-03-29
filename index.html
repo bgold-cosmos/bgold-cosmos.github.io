@@ -41,7 +41,7 @@
 <p>I'll be playing April 15 at The Depot in Hopkins, MN, along with Kindohm and Blaerg, with visual artistry provided by ObiWanCodenobi
 <img src="images/algoposter.jpg" alt="MN Algorave"></p>
 
-<p> Some code you might hear:</p>
+<p>Some code you might hear:</p>
 <pre><code>d1
  $ pingpong0 (1/8) (2/8) (165/240) (*** [gain "0.8", speed "1.5"])
  $ every 3 (within (0.25,0.5) (ntrip $ 3/4))
@@ -49,6 +49,18 @@
  $ (sound $ slow 128 $ step' ["bd", "sn:1", "hh"] $ take 1024 $ lindenmayer 30 "0:0-1-,1:22,2:-2--001-,-:-10-" "0")
  ### [crush "4", coarse "4", shape "0.99", gain "0.9"]
 </code></pre>
+
+<h2>
+<a id="visual-editing" class="anchor" href="#visual-editing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Visual Editing
+</h2>
+<p>It's still a bit much for my everyday use, but I've really been enjoying
+  <a href="https://github.com/Swordfish90/cool-retro-term" class="user-mention">@cool-retro-term</a>.
+  Using this with Tidal means using an editor inside a terminal, such as emacs or vi.  I've been using vim with vim-slime
+  in combination with tmux.  Tmux lets me make multiple windows/panes, and the vim-slime combo lets me send code from
+  the editor pane to the GHCi pane.  A screenshot doesn't really do it justice, since it does screen glow, static, and other
+  animated effects, but the end result looks like this:
+  <img src="images/crt-snap.png" alt="visual-editing demo">
+</p>
 
 
 <h2>
