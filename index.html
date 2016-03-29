@@ -41,6 +41,16 @@
 <p>I'll be playing April 15 at The Depot in Hopkins, MN, along with Kindohm and Blaerg, with visual artistry provided by ObiWanCodenobi
 <img src="images/algoposter.jpg" alt="MN Algorave"></p>
 
+<p> Some code you might hear:</p>
+<pre><code>d1
+ $ pingpong0 (1/8) (2/8) (165/240) (*** [gain "0.8", speed "1.5"])
+ $ every 3 (within (0.25,0.5) (ntrip $ 3/4))
+ $ every 2 (within (0.75,1) (necho $ 1/2))
+ $ (sound $ slow 128 $ step' ["bd", "sn:1", "hh"] $ take 1024 $ lindenmayer 30 "0:0-1-,1:22,2:-2--001-,-:-10-" "0")
+ ### [crush "4", coarse "4", shape "0.99", gain "0.9"]
+</code></pre>
+
+
 <h2>
 <a id="tidal-notes" class="anchor" href="#tidal-notes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Tidal notes</h2>
 
@@ -115,17 +125,17 @@ import Control.Monad.Trans (liftIO)
 
 <p>Then I define some custom functions I use a lot</p>
 
-<pre><code>outside n f p = slow n $ f (density n p) 
+<pre><code>outside n f p = slow n $ f (density n p)
 
-every' n o f = when ((== o) . (`mod` n)) f 
+every' n o f = when ((== o) . (`mod` n)) f
 
 slowspread' n f xs = slowspread f (concat $ map (replicate n) xs)
 
 metallo :: Time -&gt; [Int] -&gt; [Double] -&gt; (OscPattern -&gt; OscPattern)
-metallo i xs ys = slowspread (\x -&gt; inside i (striate' (fst x) (snd x))) (zip xs ys) 
+metallo i xs ys = slowspread (\x -&gt; inside i (striate' (fst x) (snd x))) (zip xs ys)
 
 choppedsaw1 :: Time -&gt; Pattern Double
-choppedsaw1 n = sig $ \t -&gt; 
+choppedsaw1 n = sig $ \t -&gt;
   let t1  = mod' (fromRational t) 1
       sqr = (2 * floor (t1 * n)) - (floor (2*t1*n)) + 1
   in  (t1 - 1) * (fromIntegral sqr) + 1
@@ -177,6 +187,6 @@ let splashSetters getNow = do ss &lt;- splashState ; return (setter ss, transiti
 
     </div>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-    
+
   </body>
 </html>
