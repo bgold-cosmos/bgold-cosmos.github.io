@@ -35,6 +35,27 @@
           <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
         </div>
 
+<h2> <a class="anchor" href="#update20170617" aria-hidden="true">
+  <span aria-hidden="true" class="octicon octicon-link"></span></a>
+  Raspberry Pi
+</h2>
+<p> Lately I've been working with some Raspberry Pi setups (I've been testing out a 3b and Zero W).
+  <ul>
+  <li>Classic Dirt &ndash; compiles pretty easily just using the standard Linux installation instructions.</li>
+  <li>SuperDirt &ndash; SuperCollider is straightforward to compile with
+    <a href="http://supercollider.github.io/development/building-raspberrypi.html">these instructions</a>.
+    I built it with the IDE, but probably didn't need to, and may eventually rebuild without.
+    You can then build SC3-plugins from source, and install the SuperDirt quark as normal.
+  <li>Tidal &ndash; on the 3b you can use backported ghc-7.10.3 and cabal-install packages (using
+    <a href="https://www.haskell.org/downloads/linux">these Debian instructions</a>).
+    Then you can use `cabal install` to get Tidal going, but you need to give it a compiler option for
+    ARM architecture.  It takes a while to build, but no problems on the Pi 3b.  Haven't gotten this
+    step working on the Zero W, though.
+</ul>
+</p>
+<p> Next I'd like to connect some sensors and use them as live inputs.
+
+
 <h2> <a class="anchor" href="#update20170314" aria-hidden="true">
   <span aria-hidden="true" class="octicon octicon-link"></span></a>
   Algorave is Five
