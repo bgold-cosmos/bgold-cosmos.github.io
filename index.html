@@ -34,12 +34,33 @@
           <span class="credits left">Project maintained by <a href="https://github.com/bgold-cosmos">bgold-cosmos</a></span>
           <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
         </div>
-<p style="text-align:center"><audio controls><source src="audio/Functor Modulation (hash 97).mp3" type="audio/mpeg"/></audio></p>
+<p style="text-align:center"><audio controls><source src="audio/Rayleigh's Lament (hash BF).mp3" type="audio/mpeg"/></audio></p>
 
 <div id="title">
   <span class="credits left" style="font-size:14px"><a href="https://soundcloud.com/bgold-cosmos">soundcloud</a> </span>
   <span class="credits right" style="font-size:14px"><a href="https://www.youtube.com/channel/UCpn3JDMUCSudVFC2x4uZWyA">youtube</a> </span>
 </div>
+
+
+<h2> <a class="anchor" href="#update20170728" aria-hidden="true">
+  <span aria-hidden="true" class="octicon octicon-link"></span></a>
+  Softsynths
+</h2>
+<p> I keep learning more about emulating old-school synthesizers.  The lesson is usually to keep it simple.
+  Here's something nice for SuperDirt (thanks to Eric Fairbanks for inspiration):
+<pre><code>SynthDef(\superpsaw, {|out, pan, freq, sustain|
+	var sound, mod, aenv, fenv;
+	aenv = EnvGen.ar(Env.linen(0.05, 0.9, 0.05, 1, 'lin'), timeScale:sustain, doneAction:2);
+	fenv = EnvGen.ar(Env.perc(0.1, 0.9, 1, -1), timeScale:sustain);
+	sound = Splay.arFill(4, {|n| VarSaw.ar(freq*(0.01*n+0.985), Rand(0,1), 0.01)}, 0.4);
+	sound = RLPF.ar(sound, freq*5*fenv, 1.5);
+	sound = sin(sound*2)/2;
+	OffsetOut.ar(out, DirtPan.ar(sound, ~dirt.numChannels, pan, aenv));
+}).add;
+</code></pre>
+In related news I've been working on a bundle of SuperDirt synths and effects, hoping they're suitable to
+make their way into an official release sometime.
+</p>
 
 <h2> <a class="anchor" href="#update20170617" aria-hidden="true">
   <span aria-hidden="true" class="octicon octicon-link"></span></a>
