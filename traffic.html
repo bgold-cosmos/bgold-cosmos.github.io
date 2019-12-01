@@ -1,0 +1,198 @@
+<!DOCTYPE HTML>
+<html lang='en'>
+<head>
+ <title> traffic </title>
+ <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+</head>
+
+<body style="max-width:800px; margin-left:10%; font-family:sans-serif; background-color:#eeeeee">
+
+<h1>TRAFFIC</h1>
+
+<input type="color" id="colorbg" value="#dddddd"/>
+<input type="color" id="color1" value="#000099"/>
+<input type="color" id="color2" value="#0000dd"/>
+<br/>
+<input type="number" id="xsize" value="169" step="1" style="width:50px"/>
+<input type="number" id="ysize" value="100" step="1" style="width:50px"/>
+<input type="number" id="boxsize" value="4" step="1" style="width:25px"/>
+<button id="resize" type="button">resize</button>
+<br/>
+<input type="number" id="density1" value="0.18" step="0.001" style="width:50px"/>
+<input type="number" id="density2" value="0.13" step="0.001" style="width:50px"/>
+<br/>
+<button id="pause" type="button" style="width:80px;">play</button>
+<button id="randomize" type="button" style="width:80px;">randomize</button>
+<div>
+  <canvas id="traffic" height="200" width="200">
+  </canvas>
+</div>
+
+<!-- END PAGE -->
+
+<script type="text/javascript">
+var ctx = traffic.getContext("2d");
+var xs, ys, grid, nextgrid;
+var playing = false;
+var colbg = colorbg.value; // "cache" colors for speed
+var col1 = color1.value;
+var col2 = color2.value;
+var bs = Number(boxsize.value);
+
+resizegrid();
+
+randomizegrid(density1.value, density2.value);
+
+drawgrid();
+
+
+// button functions
+pause.onclick = () => {
+  if (playing) {
+    clearInterval(timer);
+    playing = false;
+    pause.innerHTML = "play";
+  } else {
+    timer = setInterval(function() {stepgrid();drawgrid();}, 8);
+    playing = true;
+    pause.innerHTML = "pause";
+  }
+};
+randomize.onclick = () => randomizegrid(density1.value, density2.value)
+resize.onclick = () => resizegrid();
+colorbg.onchange = () => {colbg = colorbg.value;};
+color1.onchange = () => {col1 = color1.value;};
+color2.onchange = () => {col2 = color2.value;};
+
+// functions
+function resizegrid() {
+  xs = Number(xsize.value);
+  ys = Number(ysize.value);
+  bs = Number(boxsize.value);
+  ctx.canvas.width = xs*bs;
+  ctx.canvas.height = ys*bs;
+  grid = newgrid(xs,ys);
+  nextgrid = newgrid(xs,ys);
+  randomizegrid(density1.value, density2.value);
+}
+
+function newgrid(xs,ys) {
+  var rval = new Array(xs);
+  for (var i=0; i<xs; i++) {
+    rval[i] = new Array(ys);
+    for (var j=0; j<ys; j++) {
+      rval[i][j] = 0;
+    }
+  }
+  return rval;
+}
+
+function copygrid(g1,g2) {
+  for (var i=0; i<xs; i++) {
+    for (var j=0; j<ys; j++) {
+      g2[i][j] = g1[i][j];
+    }
+  }
+}
+
+
+// i think my rule is acutally not right, but not sure what the "real" rule is
+function stepgrid() {
+  zerogrid(nextgrid);
+  for (var j=0; j<ys; j++) {
+    //// two passes to catch everything
+    for (var i=xs-1; i>=0; i--) {
+      if (grid[i][j] == 0) continue;
+      if (grid[i][j] == 1) {
+        if (grid[(i+1)%xs][j] == 0) {
+          grid[i][j] = 0;
+          nextgrid[(i+1)%xs][j] = 1;
+        }
+      }
+    }
+    for (var i=xs-1; i>=0; i--) {
+      if (grid[i][j] == 0) continue;
+      if (grid[i][j] == 1) {
+        if (grid[(i+1)%xs][j] == 0) {
+          grid[i][j] = 0;
+          nextgrid[(i+1)%xs][j] = 1;
+        } else {
+          nextgrid[i][j] = 1;
+        }
+      } else {
+        nextgrid[i][j] = 2;
+      }
+    }
+  }
+  copygrid(nextgrid,grid);
+  zerogrid(nextgrid);
+  for (var i=0; i<xs; i++) {
+    //  // two passes to catch everything
+    for (var j=ys-1; j>=0; j--) {
+      if (grid[i][j] == 0) continue;
+      if (grid[i][j] == 2) {
+        if (grid[i][(j+1)%ys] == 0) {
+          grid[i][j] = 0;
+          nextgrid[i][(j+1)%ys] = 2;
+        }
+      }
+    }
+    for (var j=ys-1; j>=0; j--) {
+      if (grid[i][j] == 0) continue;
+      if (grid[i][j] == 2) {
+        if (grid[i][(j+1)%ys] == 0) {
+          grid[i][j] = 0;
+          nextgrid[i][(j+1)%ys] = 2;
+        } else {
+          nextgrid[i][j] = 2;
+        }
+      } else {
+        nextgrid[i][j] = 1;
+      }
+    }
+  }
+  copygrid(nextgrid,grid);
+}
+
+function randomizegrid(fill1, fill2) {
+  fill1 = Number(fill1);
+  fill2 = Number(fill2);
+  for (var i=0; i<xs; i++) {
+    for (var j=0; j<ys; j++) {
+      var x = Math.random();
+      if (x < fill1) {
+        grid[i][j] = 1;
+      } else if (x < fill1+fill2) {
+        grid[i][j] = 2;
+      } else {
+        grid[i][j] = 0;
+      }
+    }
+  }
+}
+
+function zerogrid(g) {
+  for (var i=0; i<xs; i++) {
+    for (var j=0; j<ys; j++) {
+      g[i][j] = 0;
+    }
+  }
+}
+
+function drawgrid() {
+  ctx.fillStyle = colbg
+  ctx.fillRect(0,0,xs*bs,ys*bs);
+  for (var i=0; i<xs; i++) {
+    for (var j=0; j<ys; j++) {
+      if (grid[i][j] == 0) continue;
+      if (grid[i][j] == 1) ctx.fillStyle = col1;
+      if (grid[i][j] == 2) ctx.fillStyle = col2;
+      ctx.fillRect(i*bs,j*bs,bs,bs);
+    }
+  }
+}
+
+</script>
+
+</body>
+</html>
