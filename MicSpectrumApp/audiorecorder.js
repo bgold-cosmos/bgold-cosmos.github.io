@@ -27,7 +27,7 @@ DEALINGS IN THE SOFTWARE.
 //  link.download = filename || 'output.wav';
 
 
-function encodeMonoWAV(samples){
+function encodeMonoWAV(samples, rate){
   var buffer = new ArrayBuffer(44 + samples.length * 2);
   var view = new DataView(buffer);
 
@@ -46,9 +46,9 @@ function encodeMonoWAV(samples){
   /* channel count */
   view.setUint16(22, 1, true);
   /* sample rate */
-  view.setUint32(24, 44100, true);
+  view.setUint32(24, rate, true);
   /* byte rate (sample rate * block align) */
-  view.setUint32(28, 44100 * 4, true);
+  view.setUint32(28, rate * 4, true);
   /* block align (channel count * bytes per sample) */
   view.setUint16(32, 4, true);
   /* bits per sample */

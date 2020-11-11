@@ -54,12 +54,20 @@ Input play-through monitoring:
 <br/>
 <p> Frequency spectrum</p>
 <div id="fftcanvas"><canvas id="wavefft" height="100" width="1000"></canvas></div>
-<p> <label for="guidetoggle">show harmonic guides</label><input id="guidetoggle" type="checkbox"/> </p>
+<p> <label for="guidetoggle">show harmonic guides</label><input
+id="guidetoggle" type="checkbox"/> &nbsp; (click on spectrum to place fundamental)</p>
 <p> <label for="guidefreq">guide frequency</label><input id="guidefreq" type="number" value="440" step="1"/></p>
 <p> <label for="logtoggle">log scale</label><input id="logtoggle" type="checkbox"/> </p>
 <p> <label for="freqmin">min frequency</label><input id="freqmin" type="number" value="0" step="100"/> </p>
 <p> <label for="freqmax">max frequency</label><input id="freqmax" type="number" value="4000" step="100"/> </p>
 <hr/>
+
+
+<p>
+  <input id="opentone" type="button" class="btn" value="open tone generator"
+    onclick=" window.open('tone.html','_blank');"
+> 
+</p>
 
 <div id="logdiv" style="visibility:hidden">
 output log:<br>

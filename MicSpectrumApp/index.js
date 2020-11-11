@@ -13,6 +13,7 @@ CanvasRenderingContext2D.prototype.labelText = function(text, x, y, c = "black")
 var waveCtx = waveform.getContext("2d");
 var zoomCtx = wavezoom.getContext("2d");
 var fftCtx = wavefft.getContext("2d");
+var AudioContext = window.AudioContext || window.webkitAudioContext;
 var aCtx = new AudioContext();
 var sampleRate = aCtx.sampleRate;
 // the scriptnode never actually outputs anything, but the AudioNode graph needs to be connected
@@ -100,7 +101,7 @@ function stopRecording() {
   //sampled.src = window.URL.createObjectURL(blob);
   //sampled.load();
   // make save available
-  var dataview = encodeMonoWAV(rawdata.slice(0,rawindex));
+  var dataview = encodeMonoWAV(rawdata.slice(0,rawindex), sampleRate);
   var audioBlob = new Blob([dataview], { type: "audio/wav" });
   var url = (window.URL || window.webkitURL).createObjectURL(audioBlob);
   sampled.src = url;
@@ -148,7 +149,7 @@ function zoomUpdate() {
   if (reverseplay.checked) {
     slicedData.reverse();
   }
-  var blob2 = new Blob([encodeMonoWAV(slicedData)], {type:"audio/wav"});
+  var blob2 = new Blob([encodeMonoWAV(slicedData, sampleRate)], {type:"audio/wav"});
   snippet.src = (window.URL || window.webkitURL).createObjectURL(blob2);
   snippet.load();
 }
